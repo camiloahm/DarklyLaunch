@@ -12,8 +12,12 @@ namespace DarklyLaunchTest.Controllers
 {
     public class DarkController : ApiController
     {
-        LdClient ldClient = new LdClient("sdk-dbcb098d-e73c-4e8c-a8ad-be496789dfa9");
-        User user = new User("juan.giraldo@gmail.com");
+        User user;
+
+        public DarkController()
+        {
+            user = new User(Guid.NewGuid().ToString() + "@gmail.com");
+        }
 
         // GET: api/Dark
         public async Task<bool> Get()
@@ -29,7 +33,7 @@ namespace DarklyLaunchTest.Controllers
             stopwatch.Start();
             T t = await func();
             stopwatch.Stop();
-            log("XXXXXXXXXXXX Time:"+stopwatch.Elapsed.Milliseconds.ToString());
+            log("XXXXXXXXXXXX Time:" + stopwatch.Elapsed.Milliseconds.ToString());
 
             return t;
         }
@@ -38,7 +42,7 @@ namespace DarklyLaunchTest.Controllers
         private async Task<bool> GetToggle()
         {
             user.Country = "Colombia";
-            bool showFeature = await ldClient.Toggle("something", user, false);
+            bool showFeature = await DarkLaunchConfigurator.GetInstance().GetLdClient().Toggle("something", user, false);
             if (showFeature)
             {
                 // application code to show the feature 
